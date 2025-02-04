@@ -1,0 +1,105 @@
+.admin-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.admin-dashboard h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.admin-dashboard h2 {
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.campaigns-section {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+}
+
+.campaign-list-a {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.campaign-card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    transition: transform var(--transition-duration);
+}
+
+.campaign-card:hover {
+    transform: translateY(-5px);
+}
+
+.campaign-card h3 {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.campaign-description {
+    margin-bottom: 1rem;
+}
+
+.campaign-details p {
+    margin: 0.5rem 0;
+}
+
+.send-message-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    width: 100%;
+    transition: background-color var(--transition-duration);
+}
+
+.send-message-btn:hover {
+    background-color: #2980b9;
+}
+
+.no-campaigns {
+    text-align: center;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 1rem;
+    }
+
+    .campaigns-section {
+        padding: 1rem;
+    }
+
+    .campaign-list-a {
+        grid-template-columns: 1fr;
+    }
+}
+
+li {
+    list-style: none;
+}
+
+button {
+    margin-right: 10px;
+}
+
+.btn-dlt {
+    background-color: #ea4335;
+}

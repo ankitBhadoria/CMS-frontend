@@ -1,0 +1,75 @@
+.main-header {
+    background-color: var(--card-background);
+    box-shadow: var(--box-shadow);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    height: 60px;
+    background-color: #ceebff;
+}
+
+.navbar-brand a {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color var(--transition-duration);
+    margin-left: 10px;
+}
+
+.navbar-brand a:hover {
+    color: #2980b9;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-greeting {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.login-button,
+.register-button,
+.logout-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color var(--transition-duration);
+    cursor: pointer;
+}
+
+.login-button:hover,
+.register-button:hover,
+.logout-button:hover {
+    background-color: #2980b9;
+}
+
+.register-button {
+    background-color: var(--secondary-color);
+    margin-right: 10px;
+}
+
+.register-button:hover {
+    background-color: #27ae60;
+}
+
+.logout-button {
+    margin-right: 15px;
+}
