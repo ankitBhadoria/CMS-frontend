@@ -1,6 +1,6 @@
 
 
-
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
@@ -11,8 +11,15 @@ export default function UserDashboard() {
     const [practice, setPractice] = useState(null);
     const [messages, setMessages] = useState([]);
     const [selectedMessage, setSelectedMessage] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
+
+        // if (user.role !== "practiceuser") {
+        //     navigate("/unauth");
+        //     return;
+        // }
+
         fetchUserProfile();
         fetchMessages();
     }, []);

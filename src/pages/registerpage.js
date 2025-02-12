@@ -1,10 +1,12 @@
 
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 import axios from "axios";
 import "./register.css";
 
 export default function RegisterPage() {
+    const { user } = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -15,6 +17,12 @@ export default function RegisterPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
+
+        if (user) {
+            navigate("/unauth");
+            return;
+        }
+
         const fetchPractices = async () => {
             try {
                 const response = await axios.get("http://127.0.0.1:8000/Practice/");

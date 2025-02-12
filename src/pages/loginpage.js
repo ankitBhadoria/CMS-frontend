@@ -1,12 +1,24 @@
 
 
-import { Link } from "react-router-dom"
-import { useContext } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react"
 import AuthContext from "../context/AuthContext"
 import './login.css'
 
+
+
 export default function LoginPage() {
-    const { loginUser } = useContext(AuthContext)
+    const { user, loginUser } = useContext(AuthContext)
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        if (user) {
+            navigate("/unauth");
+            return;
+        }
+
+    }, []);
 
     return (
         <div className="login-page">

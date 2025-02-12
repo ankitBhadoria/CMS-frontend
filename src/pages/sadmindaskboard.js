@@ -1,20 +1,32 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // Import the CSS for the date picker
 import "./sadashboard.css";
 
 export default function SAdminDashboard() {
-    const { authTokens } = useContext(AuthContext);
+    const { user, authTokens } = useContext(AuthContext);
     const [campaigns, setCampaigns] = useState([]); // For normal campaigns (Super Admin)
     const [adminCampaigns, setAdminCampaigns] = useState([]); // For Admin Campaigns
     const [practices, setPractices] = useState([]); // For practices
     const [selectedPractice, setSelectedPractice] = useState(""); // Selected practice
+    const [selectedPracticeUsers, setSelectedPracticeUsers] = useState([]);
     const [newCampaign, setNewCampaign] = useState({ name: "", description: "", type: "", status: "" });
     const [editingCampaignId, setEditingCampaignId] = useState(null);
     const [editingAdminCampaignId, setEditingAdminCampaignId] = useState(null);
     const [editingAdminCampaign, setEditingAdminCampaign] = useState(null); // Store Admin Campaign for inline editing
+    const [scheduleDate, setScheduleDate] = useState(null);  // Add state for scheduled date and time
+    const navigate = useNavigate();
 
     useEffect(() => {
+
+        // if (user.role !== "superadmin") {
+        //     navigate("/unauth");
+        //     return;
+        // }
+
         fetchCampaigns(); // Fetch normal campaigns (Super Admin)
         fetchPractices(); // Fetch practices for practice selection
     }, []);
@@ -154,6 +166,87 @@ export default function SAdminDashboard() {
         }
     };
 
+    const handleScheduleMessage = async (campaign) => {
+        if (!selectedPractice) {
+            alert("Please select a practice.");
+            return;
+        }
+        if (!scheduleDate) {
+            alert("Please select a schedule date and time.");
+            return;
+        }
+        try {
+            const response = await axios.get("http://127.0.0.1:8000/UserProfile/", {
+                params: {
+                    role: "practiceuser",
+                    practice_id: selectedPractice
+                }
+            });
+
+            const practiceUsers = response.data;
+            setSelectedPracticeUsers(practiceUsers);
+            const scheduledDate = scheduleDate.toISOString();
+
+
+
+            for (const userProfile of practiceUsers) {
+                console.log(userProfile.id,
+                    campaign.name,
+                    campaign.type,
+                    campaign.description,
+                    campaign.status,
+                    scheduledDate,)
+                try {
+                    await axios.post(
+                        "http://127.0.0.1:8000/Messagescheduled/",
+                        {
+                            userprofile_id: userProfile.id,
+                            name: campaign.name,
+                            type: campaign.type,
+                            description: campaign.description,
+                            status: campaign.status,
+                            scheduled_date: scheduledDate,
+                            // created_by: user.id
+                        },
+                        {
+                            headers: { Authorization: `Bearer ${authTokens.access}` },
+                        }
+                    );
+                    console.log(`Message scheduled for userProfile ${userProfile.id}`);
+                    setScheduleDate(null);
+                } catch (error) {
+                    console.error(`Error scheduling message to userProfile ${userProfile.id}:`, error);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching user profiles:", error);
+        }
+
+        // try {
+        //     // Convert the date to ISO format before sending
+        //     const scheduledDate = scheduleDate.toISOString();
+
+        //     const response = await axios.post(
+        //         "http://127.0.0.1:8000/Message/scheduled/",
+        //         {
+        //             userprofile_id: userProfile.id,
+        //             name: campaign.name,
+        //             type: campaign.type,
+        //             description: campaign.description,
+        //             status: campaign.status,
+        //             scheduled_time: scheduledDate,
+        //         },
+        //         { headers: { Authorization: `Bearer ${authTokens.access}` } }
+        //     );
+
+        //     console.log(`Message scheduled for ${scheduledDate}`);
+        //     // Reset the schedule date after the request
+        //     setScheduleDate(null);
+        // } catch (error) {
+        //     console.error("Error scheduling message:", error);
+        // }
+    };
+
     return (
         <div className="admin-dashboard">
             <header>
@@ -236,6 +329,20 @@ export default function SAdminDashboard() {
                                                 <button onClick={() => sendMessageToUsers(campaign)}>Send</button>
                                                 <button onClick={() => setEditingCampaignId(campaign.id)}>Edit</button>
                                                 <button className="btn-dlt" onClick={() => handleDeleteSuperAdminCampaign(campaign.id)}>Delete</button>
+                                                {/* Schedule Message Button */}
+                                                <button onClick={() => handleScheduleMessage(campaign)}>Schedule</button>
+
+                                                {/* Date Picker for Scheduling */}
+                                                <ReactDatePicker
+                                                    selected={scheduleDate}
+                                                    onChange={(date) => setScheduleDate(date)}
+                                                    dateFormat="Pp"
+                                                    placeholderText="Select Date and Time"
+                                                    showTimeInput  // ✅ Enables manual time entry
+                                                    showTimeSelect={false} // ❌ Hides time picker dropdown
+                                                    minDate={new Date()} // ✅ Disable past dates
+                                                    portalId="root-portal"
+                                                />
                                             </div>
                                         </>
                                     )}
@@ -312,6 +419,20 @@ export default function SAdminDashboard() {
                                                     setEditingAdminCampaign({ ...campaign }); // Set the campaign data to be edited
                                                 }}>Edit</button>
                                                 <button className="btn-dlt" onClick={() => handleDeleteAdminCampaign(campaign.id)}>Delete</button>
+                                                {/* Schedule Message Button */}
+                                                <button onClick={() => handleScheduleMessage(campaign)}>Schedule</button>
+
+                                                {/* Date Picker for Scheduling */}
+                                                <ReactDatePicker
+                                                    selected={scheduleDate}
+                                                    onChange={(date) => setScheduleDate(date)}
+                                                    dateFormat="Pp"
+                                                    placeholderText="Select Date and Time"
+                                                    showTimeInput  // ✅ Enables manual time entry
+                                                    showTimeSelect={false} // ❌ Hides time picker dropdown
+                                                    minDate={new Date()} // ✅ Disable past dates
+                                                    portalId="root-portal"
+                                                />
                                             </div>
                                         </>
                                     )}
